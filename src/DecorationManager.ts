@@ -164,19 +164,29 @@ export class DecorationMeshBuilder {
       }
 
       case 'stone_path': {
-        // Low poly random stone slabs
-        for (let i = 0; i < 5; i++) {
-          const size = 0.25 + Math.random() * 0.15;
-          const slabGeo = new THREE.CylinderGeometry(size, size, 0.04, 5);
-          const slab = new THREE.Mesh(slabGeo, i % 2 === 0 ? stoneMat : darkStoneMat);
-          slab.position.set(
-            (Math.random() - 0.5) * 0.5,
-            0.02,
-            (Math.random() - 0.5) * 0.5
-          );
-          slab.rotation.y = Math.random() * Math.PI;
-          slab.receiveShadow = true;
-          group.add(slab);
+        // Neat low-poly 2x2 grid of square flagstone pavers with subtle bevels and gap spacing
+        const borderGeo = new THREE.BoxGeometry(0.92, 0.02, 0.92);
+        const borderMat = new THREE.MeshLambertMaterial({ color: '#475569', flatShading: true });
+        const borderMesh = new THREE.Mesh(borderGeo, borderMat);
+        borderMesh.position.y = 0.01;
+        borderMesh.receiveShadow = true;
+        group.add(borderMesh);
+
+        const offsets = [-0.22, 0.22];
+        const stoneMat1 = new THREE.MeshLambertMaterial({ color: '#cbd5e1', flatShading: true });
+        const stoneMat2 = new THREE.MeshLambertMaterial({ color: '#94a3b8', flatShading: true });
+
+        let idx = 0;
+        for (const x of offsets) {
+          for (const z of offsets) {
+            const tileGeo = new THREE.BoxGeometry(0.4, 0.05, 0.4);
+            const tileMesh = new THREE.Mesh(tileGeo, idx % 2 === 0 ? stoneMat1 : stoneMat2);
+            tileMesh.position.set(x, 0.035, z);
+            tileMesh.castShadow = true;
+            tileMesh.receiveShadow = true;
+            group.add(tileMesh);
+            idx++;
+          }
         }
         break;
       }

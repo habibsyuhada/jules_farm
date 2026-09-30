@@ -42,11 +42,11 @@ window.addEventListener('DOMContentLoaded', () => {
       gridManager.hideCursor();
     }
 
-    // Pan camera on drag
+    // Pan camera on drag (inverted horizontal & vertical navigation)
     if (isPointerDown) {
       const dx = (e.clientX - startX) * 0.03;
       const dy = (e.clientY - startY) * 0.03;
-      sceneManager.panCamera(-dx, dy);
+      sceneManager.panCamera(dx, -dy);
       startX = e.clientX;
       startY = e.clientY;
     }

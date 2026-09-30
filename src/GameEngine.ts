@@ -193,34 +193,27 @@ export class GameEngine {
     }
   }
 
-  // Real-time loop for crop growth
+  // Real-time loop for crop growth requirement (crops ONLY grow when soil is watered; water expires after stage advancement)
   public updateCrops(): void {
     const now = Date.now();
     let updated = false;
 
     this.gridManager.tiles.forEach((tile, key) => {
-      if (tile.cropId && tile.plantedAt && tile.cropStage !== undefined && tile.cropStage < 3) {
+      if (tile.cropId && tile.wateredAt && tile.soilState === 'watered' && tile.cropStage !== undefined && tile.cropStage < 3) {
         const cropDef = CROPS[tile.cropId];
         if (!cropDef) return;
 
-        // Watered crops grow twice as fast
-        const isWatered = tile.soilState === 'watered';
-        const growthMult = isWatered ? 2.0 : 1.0;
+        // Stage time threshold per stage (growth divided evenly across 3 stages)
+        const stageDuration = cropDef.growthTime / 3.0;
+        const secondsSinceWatered = (now - tile.wateredAt) / 1000;
 
-        const elapsedSec = ((now - tile.plantedAt) / 1000) * growthMult;
-        const totalGrowthTime = cropDef.growthTime;
+        if (secondsSinceWatered >= stageDuration) {
+          // Advance 1 stage
+          tile.cropStage += 1;
+          // Water dries up after advancing a stage
+          tile.soilState = 'tilled';
+          tile.wateredAt = undefined;
 
-        let newStage = 0;
-        if (elapsedSec >= totalGrowthTime) {
-          newStage = 3;
-        } else if (elapsedSec >= totalGrowthTime * 0.6) {
-          newStage = 2;
-        } else if (elapsedSec >= totalGrowthTime * 0.25) {
-          newStage = 1;
-        }
-
-        if (newStage !== tile.cropStage) {
-          tile.cropStage = newStage;
           this.updateTileVisual(key, tile);
           updated = true;
         }
