@@ -115,9 +115,9 @@ export class SceneManager {
     this.cameraTarget.x += worldDx;
     this.cameraTarget.z += worldDz;
 
-    // Keep camera within reasonable farm bounds
-    this.cameraTarget.x = THREE.MathUtils.clamp(this.cameraTarget.x, -25, 25);
-    this.cameraTarget.z = THREE.MathUtils.clamp(this.cameraTarget.z, -25, 25);
+    // Keep camera within expanded 32x32 farm bounds
+    this.cameraTarget.x = THREE.MathUtils.clamp(this.cameraTarget.x, -45, 45);
+    this.cameraTarget.z = THREE.MathUtils.clamp(this.cameraTarget.z, -45, 45);
 
     this.updateCameraPosition();
   }

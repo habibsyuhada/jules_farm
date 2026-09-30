@@ -12,7 +12,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Initialize Core Systems
   const sceneManager = new SceneManager(canvas);
-  const gridManager = new GridManager(16, 1);
+  const gridManager = new GridManager(32, 1);
   const gameEngine = new GameEngine(sceneManager.scene, gridManager);
   const uiManager = new UIManager(uiContainer, gameEngine, sceneManager);
 
